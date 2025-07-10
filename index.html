@@ -203,23 +203,19 @@ Téléphone : ${form.tel.value}
     const auth = btoa("support@swishforgood.com/token:EbLVluq5EBq6TfLwIB4Bop7xQkuSTH6uY8GuSbAZ");
 
     try {
-      const response = await fetch("https://zendesk-hotline.vercel.app/api/tickets", {
-        method: "POST",
-        headers: {
-          "Authorization": `Basic ${auth}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ticket: {
-            subject: ticketSubject,
-            comment: { body: ticketBody },
-            requester: {
-              name: requesterName,
-              email: requesterEmail
-            }
-          }
-        })
-      });
+const response = await fetch("https://zendesk-hotline.vercel.app/api/tickets", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    subject: ticketSubject,
+    body: ticketBody,
+    requesterName: requesterName,
+    requesterEmail: requesterEmail
+  })
+});
+
 
       if (response.ok) {
         alert("Votre demande a été envoyée avec succès !");
