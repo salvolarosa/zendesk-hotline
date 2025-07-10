@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulaire Support Technique</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 800px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #007BFF;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<form id="zendesk-form">
+  <h2>Formulaire de signalement</h2>
+
+  <label for="macro">Type de problème (catégorie) :</label>
+  <select id="macro" onchange="updateMicroOptions()" required>
+    <option value="">-- Sélectionner une catégorie --</option>
+    <option value="tech">1. Problèmes techniques</option>
+    <option value="user">2. Problèmes liés aux utilisateurs</option>
+    <option value="payment">3. Problèmes de paiement</option>
+    <option value="install">4. Problèmes d’installation ou de maintenance</option>
+    <option value="software">5. Problèmes logiciels / plateformes</option>
+    <option value="network">6. Problèmes de réseau et compatibilité</option>
+    <option value="admin">7. Problèmes administratifs</option>
+  </select>
+
+  <label for="micro">Détail du problème :</label>
+  <select id="micro" required>
+    <option value="">-- Sélectionner un détail --</option>
+  </select>
+
+  <label for="sujet">Sujet :</label>
+  <input type="text" id="sujet" name="sujet" required>
+
+  <label for="description">Description :</label>
+  <textarea id="description" name="description" required></textarea>
+
+  <label for="priorite">Priorité :</label>
+  <select id="priorite" name="priorite" required>
+    <option value="">-- Sélectionner --</option>
+    <option value="Faible">Faible</option>
+    <option value="Moyen">Moyen</option>
+    <option value="Élevé">Élevé</option>
+  </select>
+
+  <label for="client">Client :</label>
+  <input type="text" id="client" name="client">
+
+  <label for="site">Site :</label>
+  <input type="text" id="site" name="site">
+
+  <label for="point">Numéro du point de charge :</label>
+  <input type="text" id="point" name="point">
+
+  <label for="user">Utilisateur :</label>
+  <input type="text" id="user" name="user">
+
+  <label for="rfid">Code RFID :</label>
+  <input type="text" id="rfid" name="rfid">
+
+  <label for="erreur">Code d’erreur affiché (si applicable) :</label>
+  <input type="text" id="erreur" name="erreur">
+
+  <label for="email">Contact email :</label>
+  <input type="email" id="email" name="email" required>
+
+  <label for="tel">Numéro de téléphone :</label>
+  <input type="tel" id="tel" name="tel">
+
+  <button type="submit">Envoyer</button>
+</form>
+
+<script>
+  const microCategories = {
+    tech: [
+      "Borne ne fonctionne pas (aucune charge, écran éteint, etc.)",
+      "Déconnexion de la borne (perte de communication avec le réseau)"
+    ],
+    user: [
+      "Difficulté à démarrer une session de recharge",
+      "Erreur d’authentification avec un badge RFID ou une application",
+      "Mauvaise compréhension du fonctionnement de la borne"
+    ],
+    payment: [
+      "Facturation incorrecte ou inattendue",
+      "Problème avec un paiement",
+      "Remboursement d’une transaction erronée"
+    ],
+    install: [
+      "Retard ou problème lors de l’installation d’une borne",
+      "Demande d’intervention ou de réparation d’une borne existante"
+    ],
+    software: [
+      "Dysfonctionnement de l’application mobile ou du portail web",
+      "Incohérence des données affichées (niveau de charge, historique, etc.)",
+      "Notifications ou alertes incorrectes"
+    ],
+    network: [
+      "Difficulté à connecter une voiture à une borne spécifique",
+      "Problèmes avec l’interopérabilité"
+    ],
+    admin: [
+      "Questions liées aux contrats",
+      "Demande d’accès à des statistiques ou rapports d’utilisation"
+    ]
+  };
+
+  function updateMicroOptions() {
+    const macro = document.getElementById("macro").value;
+    const micro = document.getElementById("micro");
+    micro.innerHTML = '<option value="">-- Sélectionner un détail --</option>';
+    if (microCategories[macro]) {
+      microCategories[macro].forEach(optionText => {
+        const opt = document.createElement("option");
+        opt.value = optionText;
+        opt.textContent = optionText;
+        micro.appendChild(opt);
+      });
+    }
+  }
+
+  document.getElementById("zendesk-form").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+
+    const ticketSubject = form.sujet.value;
+    const ticketBody = `
+Catégorie : ${form.macro.options[form.macro.selectedIndex].text}
+Sous-catégorie : ${form.micro.value}
+Description : ${form.description.value}
+Priorité : ${form.priorite.value}
+Client : ${form.client.value}
+Site : ${form.site.value}
+Point de charge : ${form.point.value}
+Utilisateur : ${form.user.value}
+Code RFID : ${form.rfid.value}
+Code d’erreur : ${form.erreur.value}
+Téléphone : ${form.tel.value}
+    `;
+
+    const requesterEmail = form.email.value;
+    const requesterName = form.client.value || "Client inconnu";
+
+    const auth = btoa("support@swishforgood.com/token:EbLVluq5EBq6TfLwIB4Bop7xQkuSTH6uY8GuSbAZ");
+
+    try {
+      const response = await fetch("https://swish7527.zendesk.com/api/v2/tickets.json", {
+        method: "POST",
+        headers: {
+          "Authorization": `Basic ${auth}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ticket: {
+            subject: ticketSubject,
+            comment: { body: ticketBody },
+            requester: {
+              name: requesterName,
+              email: requesterEmail
+            }
+          }
+        })
+      });
+
+      if (response.ok) {
+        alert("Votre demande a été envoyée avec succès !");
+        form.reset();
+      } else {
+        const error = await response.text();
+        console.error("Erreur de Zendesk :", error);
+        alert("Erreur lors de la création du ticket.");
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      alert("Erreur réseau ou problème technique.");
+    }
+  });
+</script>
+
+</body>
+</html>
