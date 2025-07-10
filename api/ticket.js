@@ -1,45 +1,33 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { subject, description, email } = req.body;
+  const { subject, body, requesterName, requesterEmail } = req.body;
 
-  const ZENDESK_DOMAIN = 'https://swish7527.zendesk.com';
-  const ZENDESK_EMAIL = 'support@swishforgood.com';
-  const ZENDESK_TOKEN = process.env.ZENDESK_TOKEN;
+  const zendeskRes = await fetch("https://swish7527.zendesk.com/api/v2/tickets.json", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Basic " + Buffer.from("support@swishforgood.com/token:EbLVluq5EBq6TfLwIB4Bop7xQkuSTH6uY8GuSbAZ").toString("base64")
+    },
+    body: JSON.stringify({
+      ticket: {
+        subject,
+        comment: { body },
+        requester: {
+          name: requesterName,
+          email: requesterEmail
+        }
+      }
+    })
+  });
 
-  const auth = Buffer.from(`${ZENDESK_EMAIL}/token:${ZENDESK_TOKEN}`).toString('base64');
+  const data = await zendeskRes.json();
 
-  try {
-    const response = await fetch(`${ZENDESK_DOMAIN}/api/v2/requests.json`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${auth}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        request: {
-          requester: {
-            name: email,
-            email: email,
-          },
-          subject,
-          comment: {
-            body: description,
-          },
-        },
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(response.status).json(data);
-    }
-
-    return res.status(200).json({ message: 'Ticket created successfully', data });
-  } catch (error) {
-    return res.status(500).json({ message: 'Server error', error: error.message });
+  if (!zendeskRes.ok) {
+    return res.status(zendeskRes.status).json(data);
   }
+
+  res.status(200).json(data);
 }
