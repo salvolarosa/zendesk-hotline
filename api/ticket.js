@@ -26,3 +26,26 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         ticket: {
+          subject,
+          comment: { body },
+          requester: {
+            name: requesterName,
+            email: requesterEmail
+          }
+        }
+      })
+    });
+
+    const data = await zendeskRes.json();
+
+    if (!zendeskRes.ok) {
+      return res.status(zendeskRes.status).json(data);
+    }
+
+    return res.status(200).json(data);
+
+  } catch (error) {
+    console.error('Erreur API handler:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
