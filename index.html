@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Formulaire Support Technique</title>
+  <title>Swish Hotline Support Form</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,6 +17,12 @@
       max-width: 800px;
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-top: 6px solid #244393;
+    }
+
+    h2 {
+      color: #244393;
+      margin-bottom: 10px;
     }
 
     label {
@@ -25,12 +31,17 @@
       font-weight: bold;
     }
 
+    label span {
+      color: #d13092;
+    }
+
     input, select, textarea {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 14px;
     }
 
     textarea {
@@ -40,25 +51,26 @@
 
     button {
       margin-top: 20px;
-      background: #007BFF;
+      background: #71c8b8;
       color: #fff;
       padding: 12px 20px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     button:hover {
-      background: #0056b3;
+      background: #5bb1a3;
     }
   </style>
 </head>
 <body>
 
 <form id="zendesk-form">
-  <h2>Formulaire de signalement</h2>
+  <h2>Swish Hotline Support Form</h2>
 
-  <label for="macro">Type de problème (catégorie) :</label>
+  <label for="macro">Type de problème (catégorie) : <span>*</span></label>
   <select id="macro" onchange="updateMicroOptions()" required>
     <option value="">-- Sélectionner une catégorie --</option>
     <option value="tech">1. Problèmes techniques</option>
@@ -70,18 +82,18 @@
     <option value="admin">7. Problèmes administratifs</option>
   </select>
 
-  <label for="micro">Détail du problème :</label>
+  <label for="micro">Détail du problème : <span>*</span></label>
   <select id="micro" required>
     <option value="">-- Sélectionner un détail --</option>
   </select>
 
-  <label for="sujet">Sujet :</label>
+  <label for="sujet">Sujet : <span>*</span></label>
   <input type="text" id="sujet" name="sujet" required>
 
-  <label for="description">Description :</label>
+  <label for="description">Description : <span>*</span></label>
   <textarea id="description" name="description" required></textarea>
 
-  <label for="priorite">Priorité :</label>
+  <label for="priorite">Priorité : <span>*</span></label>
   <select id="priorite" name="priorite" required>
     <option value="">-- Sélectionner --</option>
     <option value="Faible">Faible</option>
@@ -89,8 +101,8 @@
     <option value="Élevé">Élevé</option>
   </select>
 
-  <label for="client">Client :</label>
-  <input type="text" id="client" name="client">
+  <label for="client">Client : <span>*</span></label>
+  <input type="text" id="client" name="client" required>
 
   <label for="site">Site :</label>
   <input type="text" id="site" name="site">
