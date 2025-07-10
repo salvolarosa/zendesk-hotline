@@ -1,15 +1,14 @@
 export default async function handler(req, res) {
-  // CORS headers
+  // Toujours envoyer ces headers, y compris pour OPTIONS
   res.setHeader("Access-Control-Allow-Origin", "https://salvolarosa.github.io");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight request
   if (req.method === "OPTIONS") {
+    // Réponse immédiate et OK à la requête préflight
     return res.status(200).end();
   }
 
-  // Block other methods than POST
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
